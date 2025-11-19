@@ -7,8 +7,11 @@ services:
   # docker run -d --name backend --network expense -e DB_HOST=mysql -p 8080:8080 backend:1.0.0
   # this is equivalent to above docker run command
   backend:
-    build:
-      context: ./backend
+    image: backend:1.0.0
+    # sh -c is used to run multiple commands in a single line. it is a shell command
+    # since mysql is a heavy service it takes some time to start
+    # so we are adding a sleep of 5 seconds before starting the backend service
+    command: sh -c "sleep 5 && node /opt/backend/index.js"
     networks:
       - expense
     container_name: backend
@@ -37,3 +40,4 @@ services:
     depends_on:
       - backend
     # no need of volume since it is stateless service
+# mysql:1.0.0 , backend:1.0.0 , frontend:1.0.0 are custom images which are built already in the local system i.e ec2 instance
